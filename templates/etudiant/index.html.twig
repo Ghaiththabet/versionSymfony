@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} list etudiants {% endblock %}
+
+{% block body  %}
+{% for et in etudiants %}
+ {{et.name}}
+ {{et.id}}
+
+ {% endfor %}
+
+ {% endblock %}
