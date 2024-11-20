@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QuizRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,8 +22,16 @@ class Quiz
     #[ORM\Column(length: 50)]
     private ?string $QuizType = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $QuizQuestion = [];
+
+    #[ORM\OneToOne(mappedBy: 'quiz', cascade: ['persist', 'remove'])]
+    private ?Cours $cours = null;
+
+    #[ORM\Column(type: Types::JSON)]
+    private array $Question = [];
+
+    #[ORM\Column]
+    private ?int $Resultat = null;
+
 
     public function getId(): ?int
     {
@@ -52,15 +62,45 @@ class Quiz
         return $this;
     }
 
-    public function getQuizQuestion(): array
+    public function getCours(): ?Cours
     {
-        return $this->QuizQuestion;
+        return $this->cours;
     }
 
-    public function setQuizQuestion(array $QuizQuestion): static
+    public function setCours(Cours $cours): static
     {
-        $this->QuizQuestion = $QuizQuestion;
+        // set the owning side of the relation if necessary
+        if ($cours->getQuiz() !== $this) {
+            $cours->setQuiz($this);
+        }
+
+        $this->cours = $cours;
 
         return $this;
     }
+
+    public function getQuestion(): array
+    {
+        return $this->Question;
+    }
+
+    public function setQuestion(array $Question): static
+    {
+        $this->Question = $Question;
+
+        return $this;
+    }
+
+    public function getResultat(): ?int
+    {
+        return $this->Resultat;
+    }
+
+    public function setResultat(int $Resultat): static
+    {
+        $this->Resultat = $Resultat;
+
+        return $this;
+    }
+
 }
